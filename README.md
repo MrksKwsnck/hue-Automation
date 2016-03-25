@@ -63,6 +63,87 @@ sync button* near the batteries. And there is a very short time span to issue
 the *connect* command right after the pairing succeded, so the automatic
 re-establishment of the connection may work.
 
+Afer you have succesfully paired a Wiimote, you can run the provided command
+`sudo xwiishow 1` (where super user privileges are suggested and the number
+argument identifies a Wiimote) to check whether all input is working properly.
+
+
+### Install language bindings ###
+
+For further development the language bindings [xwiimote-bindings][5] for the
+[xwiimote][4] package are being needed. Get both packages directly from their
+GitHub repositories, as you need to compile them yourself. To do so follow these
+steps:
+
+**NOTE:** The prefix is set to `$HOME/usr` for convenience. You will find all
+the compiled files there beneath your home directory. That way the system does
+not get messed up!
+
+```
+# Dependencies needed for Raspbian Jessie
+sudo apt-get install automake autoconf libtool m4 libncurses5 libncurses5-dev libudev-dev swig libxwiimote2 libxwiimote-dev python-dev
+
+
+############
+# xwiimote #
+############
+
+# Clone the xwiimote project and change into its directory
+git clone git@github.com:dvdhrm/xwiimote.git
+cd xwiimote
+
+# Prepare the project for compilation (this will take a while)
+./autogen.sh --prefix=$HOME/usr
+
+# Compile and install
+make
+make install
+
+
+#####################
+# xwiimote-bindings #
+#####################
+
+# Clone the xwiimote-bindings project and change into its directory
+git clone git@github.com:dvdhrm/xwiimote-bindings.git
+cd xwiimote-bindings
+
+# Tell xwiimote-bindings where xwiimote can be found
+export PKG_CONFIG_PATH=$HOME/usr/lib/pkgconfig
+
+# Prepare the project for compilation (this will take a while)
+./autogen.sh --prefix=$HOME/usr
+
+# Compile and install
+make
+make install
+```
+
+
+### Test language bindings ###
+
+Because xwiimote and the language bindings were installed beneath the prefixed
+`$HOME/usr` path, you need to configure the dynamic linker *ldconfig*
+appropriately. Otherwise the shared objects will not be found. To do so, add the
+**expanded** prefix path (e.g. `/home/pi/usr/lib`) into the `/etc/ld.so.conf`
+configuration file **before any other** path or include. After that reload the
+shared library cache with: `sudo ldconfig`
+
+Finally, the time has come to test the shipped example. For this it is necessary
+to tell the Python interpreter where it can find the xwiimote module. The
+simplest way is to preceed the Python interpreter with the environment variable
+`PYTHONPATH`, which contains colon separated paths to modules.
+
+```
+sudo PYTHONPATH=$HOME/usr/lib/python2.7/site-packages python examples/python/xwiimote_test.py
+```
+
+**Hint:** For some access to the Wiimote hardware, super user privileges are
+needed!
+
+If all went well so far, you will see some status output and the Wiimote rumbles
+shortly.
+
 
 Further reading
 ---------------
@@ -76,3 +157,5 @@ informations about the hardware and software of Wiimotes.
 [1]:  https://dvdhrm.github.io/xwiimote/  "Linux kernel driver for Wiimotes"
 [2]:  https://wiki.archlinux.org/index.php/XWiimote "Usage of XWiimote"
 [3]:  http://www.bluez.org/ "Official Linux Bluetooth protocol stack"
+[4]:  https://github.com/dvdhrm/xwiimote  "Open Source Nintendo Wii Remote Linux Device Driver"
+[5]:  https://github.com/dvdhrm/xwiimote-bindings "Language bindings for the xwiimote package"
