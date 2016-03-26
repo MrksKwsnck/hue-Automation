@@ -74,18 +74,16 @@ print "mp", x, y, z, factor
 p = poll()
 p.register(fd, POLLIN)
 evt = xwiimote.event()
-n = 0
-while n < 2:
-    p.poll()
+while True:
     try:
+        p.poll()
         dev.dispatch(evt)
         if evt.type == xwiimote.EVENT_KEY:
             code, state = evt.get_key()
             print "Key:", code, ", State:", state
-            n+=1
         elif evt.type == xwiimote.EVENT_GONE:
             print "Gone"
-            n = 2
+            break
         elif evt.type == xwiimote.EVENT_WATCH:
             print "Watch"
         elif evt.type == xwiimote.EVENT_CLASSIC_CONTROLLER_KEY:
@@ -119,5 +117,8 @@ while n < 2:
     except IOError as e:
         if e.errno != errno.EAGAIN:
             print "Bad"
+    except KeyboardInterrupt:
+        print "exiting..."
+        break
 
 exit(0)
