@@ -127,7 +127,9 @@ Because xwiimote and the language bindings were installed beneath the prefixed
 appropriately. Otherwise the shared objects will not be found. To do so, add the
 **expanded** prefix path (e.g. `/home/pi/usr/lib`) into the `/etc/ld.so.conf`
 configuration file **before any other** path or include. After that reload the
-shared library cache with: `sudo ldconfig`
+shared library cache with: `sudo ldconfig` -- Alternatively, if you do not want
+to change the dynamic linkers configuration, you can pass the prefix path with
+the `LD_LIBRARY_PATH` environment variable to the Python interpreter.
 
 Finally, the time has come to test the shipped example. For this it is necessary
 to tell the Python interpreter where it can find the xwiimote module. The
@@ -135,7 +137,7 @@ simplest way is to preceed the Python interpreter with the environment variable
 `PYTHONPATH`, which contains colon separated paths to modules.
 
 ```
-sudo PYTHONPATH=$HOME/usr/lib/python2.7/site-packages python examples/python/xwiimote_test.py
+sudo LD_LIBRARY_PATH=$HOME/usr/lib PYTHONPATH=$HOME/usr/lib/python2.7/site-packages python examples/python/xwiimote_test.py
 ```
 
 **Hint:** For some access to the Wiimote hardware, super user privileges are
