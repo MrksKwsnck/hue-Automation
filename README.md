@@ -147,6 +147,29 @@ If all went well so far, you will see some status output and the Wiimote rumbles
 shortly.
 
 
+### Setting up hue ###
+
+Now, for the communication between the application and the hue bridge, the
+Python module [phue][6] is being used. You will need to set the **IP-Address**
+and the **API-Username** in the projects configuration file accordingly to your
+environment.
+
+First, you need to install *pip* (the alternative Python package installer), if
+not done yet. Note that all the dependencies are for Python 2.7 as the
+xwiimote-bindings support that Python version only. Then, install the phue
+Python module using pip system wide.
+
+```
+sudo apt-get install python-pip
+sudo pip install phue
+```
+
+Make a copy of `python_hue.example.json` to `python_hue.json` for editting.
+Inside that file replace `<IPADDRESS>` with the IP-Address of your hue bridge
+and set `<USERNAME>` to your hue username. Of course, you need to [create a user][7]
+for the hue API first.
+
+
 Further reading
 ---------------
 
@@ -161,3 +184,5 @@ informations about the hardware and software of Wiimotes.
 [3]:  http://www.bluez.org/ "Official Linux Bluetooth protocol stack"
 [4]:  https://github.com/dvdhrm/xwiimote  "Open Source Nintendo Wii Remote Linux Device Driver"
 [5]:  https://github.com/dvdhrm/xwiimote-bindings "Language bindings for the xwiimote package"
+[6]:  https://github.com/studioimaginaire/phue  "A Python library for the Philips Hue system"
+[7]:  http://www.developers.meethue.com/documentation/configuration-api#71_create_user  "Configuration API > Create user"

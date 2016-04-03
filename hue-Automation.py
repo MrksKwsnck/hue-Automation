@@ -15,6 +15,45 @@ from select import poll, POLLIN
 from inspect import getmembers
 from pprint import pprint
 import xwiimote
+from hue import *
+
+
+# Evaluate a button event
+def eval_key(code, state):
+    if code == 0 and state == 1:
+        # Left button
+        hue.shift_hue_left()
+    elif code == 1 and state == 1:
+        # Right button
+        hue.shift_hue_right()
+    elif code == 2 and state == 1:
+        # Up button
+        hue.inc_bri()
+    elif code == 3 and state == 1:
+        # Down button
+        hue.dec_bri()
+    elif code == 4 and state == 1:
+        # A button
+        hue.toggle_on()
+    elif code == 5 and state == 1:
+        # B button
+        pass
+    elif code == 6 and state == 1:
+        # Plus button
+        hue.next_light()
+    elif code == 7 and state == 1:
+        # Minus button
+        hue.prev_light()
+    elif code == 8 and state == 1:
+        # Home button
+        hue.alert_current_light()
+    elif code == 9 and state == 1:
+        # 1 button
+        hue.toggle_colorloop()
+    elif code == 10 and state == 1:
+        # 2 button
+        hue.lalert_current_light()
+
 
 # display a constant
 print "=== " + xwiimote.NAME_CORE + " ==="
@@ -70,6 +109,9 @@ dev.set_mp_normalization(10, 20, 30, 40)
 x, y, z, factor = dev.get_mp_normalization()
 print "mp", x, y, z, factor
 
+# Instantiate hue
+hue = Hue()
+
 # read some values
 p = poll()
 p.register(fd, POLLIN)
@@ -81,6 +123,7 @@ while True:
         if evt.type == xwiimote.EVENT_KEY:
             code, state = evt.get_key()
             print "Key:", code, ", State:", state
+            eval_key(code, state)
         elif evt.type == xwiimote.EVENT_GONE:
             print "Gone"
             break
